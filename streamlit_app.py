@@ -2,7 +2,7 @@ import streamlit as st
 from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api.formatters import TextFormatter
 import re
-from googletrans import Translator
+from deep_translator import GoogleTranslator
 from gtts import gTTS
 import tempfile
 import os
@@ -92,9 +92,20 @@ def transcribe_audio(audio_path):
         st.error(f"Transcription failed: {str(e)}")
         return None
 
-def translate_text(text, target_code):
-    translator = Translator()
-    return translator.translate(text, dest=target_code).text
+#def translate_text(text, target_code):
+#    translator = Translator()
+#    return translator.translate(text, dest=target_code).text
+
+
+def translate_text(text, target_language_code):
+    """Translate text using deep-translator (Google Translate backend)"""
+    try:
+        translator = GoogleTranslator(source='auto', target=target_language_code)
+        translation = translator.translate(text)
+        return translation
+    except Exception as e:
+        st.error(f"Translation failed: {str(e)}")
+        return None
 
 def generate_tts(text, lang_code):
     """Generate speech and return path to mp3 file"""
